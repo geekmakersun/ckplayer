@@ -13,7 +13,7 @@ jobs:
     - name: 设置 Node.js 环境
       uses: actions/setup-node@v4
       with:
-        node-version: '23' # 可根据项目需求调整 Node.js 版本
+        node-version: 'latest' # 可根据项目需求调整 Node.js 版本
         registry-url: 'https://registry.npmjs.org'
     - name: 安装依赖
       run: npm install
