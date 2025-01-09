@@ -19,8 +19,6 @@ jobs:
       run: npm install -g npm
     - name: 自动化环境
       run: npm ci
-    - name: 删除排除文件
-      run: rm -rf package.json
     - name: 发布到 npm
       run: npm publish
       env:
