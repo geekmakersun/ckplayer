@@ -8,12 +8,16 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: 设置 Node.js 环境
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
         node-version: '23' # 可根据项目需求调整 Node.js 版本
+        registry-url: 'https://registry.npmjs.org'
     - name: 安装依赖
       run: npm install
     - name: 发布到 npm
