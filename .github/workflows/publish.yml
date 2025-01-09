@@ -1,0 +1,22 @@
+name: 发布到 npmjs
+
+on:
+  push:
+    branches:
+      - main # 可根据需要修改为其他分支，例如 master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: 设置 Node.js 环境
+      uses: actions/setup-node@v2
+      with:
+        node-version: '23' # 可根据项目需求调整 Node.js 版本
+    - name: 安装依赖
+      run: npm install
+    - name: 发布到 npm
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 从 GitHub Secrets 中获取 npm 认证令牌
