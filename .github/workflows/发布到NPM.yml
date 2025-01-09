@@ -1,25 +1,31 @@
-name: 发布到 npmjs
+name: Node.js Package
 
 on:
-  push:
-    branches:
-      - main # 可根据需要修改为其他分支，例如 master
+  release:
+    types: [created]
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: 设置 Node.js 环境
-      uses: actions/setup-node@v4
-      with:
-        node-version: latest
-        registry-url: https://registry.npmjs.org
-    - name: 安装依赖
-      run: npm install
-    - name: 更新版本号
-      run: npm version patch
-    - name: 发布到 npm
-      run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 从 GitHub Secrets 中获取 npm 认证令牌
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm test
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
