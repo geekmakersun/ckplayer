@@ -17,7 +17,23 @@ jobs:
         registry-url: https://registry.npmjs.org
     - name: 安装依赖
       run: npm install
-    - name: 发布到 npm
-      run: npm publish
+    - name: 获取 package.json 中的版本号
+      id: version
+      run: echo "::set-output name=version::$(node -e "console.log(require('./package.json').version)")"
+    - name: 检查包是否已发布
+      run: |
+        if npm view super-slide@${{ steps.version.outputs.version }} version; then
+          echo "版本 ${{ steps.version.outputs.version }} 已发布，跳过发布操作。"
+        else
+          npm publish --access public
+        fi
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 从 GitHub Secrets 中获取 npm 认证令牌
+    - name: 检查发布结果
+      run: |
+        if [ $? -eq 0 ]; then
+          echo "包发布成功。"
+        else
+          echo "包发布失败。请查看日志了解详细信息。"
+          exit 1
+        fi
